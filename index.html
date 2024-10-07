@@ -84,6 +84,8 @@
           <label for="loginPassword">Password</label>
           <input type="password" id="loginPassword" required />
 
+          <label><input type="checkbox" id="rememberMe" /> Remember Me </label>
+
           <button type="submit" id="submitLogin">Login</button>
 
           <!-- Social Login Options -->
@@ -105,17 +107,29 @@
         <span class="close" id="closeSignup">&times;</span>
         <h2>Sign Up</h2>
         <form id="signupForm">
-          <label for="signupUseremail">Email</label>
-          <input type="text" id="signupUseremail" required />
-
-          <label for="signupPassword">Password</label>
-          <input type="password" id="signupPassword" required />
-
-          <button type="submit" id="submitSignup">Sign Up</button>
+          <input
+            type="text"
+            id="signupUsername"
+            placeholder="Enter your name"
+            required
+          />
+          <input
+            type="email"
+            id="signupUseremail"
+            placeholder="Enter your email"
+            required
+          />
+          <input
+            type="password"
+            id="signupPassword"
+            placeholder="Enter your password"
+            required
+          />
 
           <!-- New field for profile picture -->
           <label for="profilePic">Profile Picture</label>
           <input type="file" id="profilePic" accept="image/*" />
+          <button type="submit" id="submitSignup">Sign Up</button>
 
           <!-- Social Signup Options -->
           <div class="social-login">

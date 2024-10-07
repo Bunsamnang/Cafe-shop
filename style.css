@@ -148,7 +148,12 @@ input {
 }
 
 input[type="file"] {
-  font-size: 1rem;
+  font-size: 1.1rem;
+  padding: 0;
+}
+
+input[type="checkbox"] {
+  vertical-align: middle;
 }
 
 button[type="submit"] {

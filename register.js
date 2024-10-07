@@ -4,6 +4,10 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updateProfile,
+  setPersistence,
+  browserLocalPersistence,
+  browserSessionPersistence,
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 
 import {
@@ -36,6 +40,7 @@ submitSignup.addEventListener("click", (e) => {
   e.preventDefault();
 
   //inputs
+  const signupUsername = document.getElementById("signupUsername").value;
   const signupUseremail = document.getElementById("signupUseremail").value;
   const signupPassword = document.getElementById("signupPassword").value;
   const profilePic = document.getElementById("profilePic").files[0];
@@ -43,27 +48,36 @@ submitSignup.addEventListener("click", (e) => {
   createUserWithEmailAndPassword(auth, signupUseremail, signupPassword)
     .then((userCredential) => {
       // Signed up
+
       const user = userCredential.user;
 
+      // Create a promise chain for updating the profile
       if (profilePic) {
         const storageRef = ref(storage, `profilePictures/${user.uid}.jpg`);
 
-        uploadBytes(storageRef, profilePic).then(() => {
+        // Upload profile picture and update profile
+        return uploadBytes(storageRef, profilePic).then(() => {
           getDownloadURL(storageRef).then((url) => {
-            user
-              .updateProfile({
-                photoURL: url,
-              })
-              .then(() => {
-                alert("Successfully signed up");
-                window.location.href = "index.html";
-              });
+            return updateProfile(user, {
+              displayName: signupUsername, // set the display name
+              photoURL: url,
+            });
           });
         });
       } else {
-        alert("Account created successfully!");
-        window.location.href = "index.html";
+        // if no pfp uploaded
+
+        return updateProfile(user, {
+          displayName: signupUsername, // set the display name
+        });
       }
+    })
+    // after successfully sign up
+
+    .then(() => {
+      // Redirect to the main page after successfully signing up
+      alert("Account created successfully!");
+      window.location.href = "index.html";
     })
     .catch((error) => {
       const errorCode = error.code;
@@ -72,6 +86,8 @@ submitSignup.addEventListener("click", (e) => {
     });
 });
 
+const rememberMeCheckBox = document.getElementById("rememberMe");
+
 submitLogin.addEventListener("click", (e) => {
   e.preventDefault();
 
@@ -79,16 +95,21 @@ submitLogin.addEventListener("click", (e) => {
   const loginUseremail = document.getElementById("loginUseremail").value;
   const loginPassword = document.getElementById("loginPassword").value;
 
-  signInWithEmailAndPassword(auth, loginUseremail, loginPassword)
+  const persistenceType = rememberMeCheckBox.checked
+    ? browserLocalPersistence // Stay logged in after closing the browser
+    : browserSessionPersistence; // End session when browser is closed
+
+  setPersistence(auth, persistenceType)
+    .then(() => {
+      return signInWithEmailAndPassword(auth, loginUseremail, loginPassword);
+    })
     .then((userCredential) => {
       const user = userCredential.user;
-
-      alert(`Welcome back, ${user.email}!`);
-
+      alert(`Welcome back, ${user.displayName || user.email}!`);
       window.location.href = "index.html";
     })
     .catch((error) => {
-      alert("Error: invalid gmail or password");
+      alert("Error: invalid email or password");
     });
 });
 
@@ -110,6 +131,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // If user has a photoURL, display it; otherwise, show the default image
       const profileImage = document.getElementById("profileImage");
+
+      console.log(user.photoURL);
+
       if (user.photoURL) {
         profileImage.src = user.photoURL;
       } else {
