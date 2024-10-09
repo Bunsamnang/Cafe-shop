@@ -46,6 +46,12 @@ submitSignup.addEventListener("click", (e) => {
   const signupPassword = document.getElementById("signupPassword").value;
   const profilePic = document.getElementById("profilePic").files[0];
 
+  const passwordValidationMsg = validatePassword(signupPassword);
+  if (passwordValidationMsg) {
+    alert(passwordValidationMsg);
+    return; // Stop the signup process if validation fails
+  }
+
   createUserWithEmailAndPassword(auth, signupUseremail, signupPassword)
     .then((userCredential) => {
       // Signed up
@@ -110,7 +116,25 @@ submitLogin.addEventListener("click", (e) => {
       window.location.href = "index.html";
     })
     .catch((error) => {
-      alert("Error: invalid email or password");
+      const errorCode = error.code;
+
+      let errorMessage;
+
+      switch (errorCode) {
+        case "auth/wrong-password":
+          errorMessage = "Incorrect password. Please try again.";
+          break;
+        case "auth/user-not-found":
+          errorMessage = "No user found with this email.";
+          break;
+        case "auth/invalid-email":
+          errorMessage = "Invalid email format. Please enter a valid email.";
+          break;
+        default:
+          errorMessage = "An error occurred. Please try again.";
+      }
+
+      alert(`Error: ${errorMessage}`);
     });
 });
 
@@ -130,7 +154,6 @@ logoutBtn.addEventListener("click", () => {
 });
 
 // Reset password
-
 const reset = document.getElementById("reset");
 reset.addEventListener("click", (e) => {
   e.preventDefault();
@@ -194,3 +217,30 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+// Password validation function
+function validatePassword(password) {
+  const minLength = 8;
+  const hasUpperCase = /[A-Z]/.test(password);
+  const hasLowerCase = /[a-z]/.test(password);
+  const hasNumber = /\d/.test(password);
+  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+  if (password.length < minLength) {
+    return "Password must be at least 8 characters long.";
+  }
+  if (!hasUpperCase) {
+    return "Password must contain at least one uppercase letter.";
+  }
+  if (!hasLowerCase) {
+    return "Password must contain at least one lowercase letter.";
+  }
+  if (!hasNumber) {
+    return "Password must contain at least one number.";
+  }
+  if (!hasSpecialChar) {
+    return "Password must contain at least one special character.";
+  }
+
+  return ""; // Return an empty string if validation passes
+}
