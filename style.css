@@ -140,6 +140,11 @@ label {
   font-size: 1.2rem;
 }
 
+#reset {
+  font-size: 1.2rem;
+  margin-left: 10px;
+}
+
 input {
   margin: 10px 0;
   padding: 10px;

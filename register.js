@@ -5,6 +5,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
+  sendPasswordResetEmail,
   setPersistence,
   browserLocalPersistence,
   browserSessionPersistence,
@@ -105,11 +106,44 @@ submitLogin.addEventListener("click", (e) => {
     })
     .then((userCredential) => {
       const user = userCredential.user;
-      alert(`Welcome back, ${user.displayName || user.email}!`);
+      alert(`Welcome back, ${user.displayName}!`);
       window.location.href = "index.html";
     })
     .catch((error) => {
       alert("Error: invalid email or password");
+    });
+});
+
+// Log out functionality
+
+const logoutBtn = document.getElementById("logoutBtn");
+logoutBtn.addEventListener("click", () => {
+  auth
+    .signOut()
+    .then(() => {
+      alert("You have logged out.");
+      window.location.href = "index.html";
+    })
+    .catch((error) => {
+      alert(`Error loggin out: ${error.message}`);
+    });
+});
+
+// Reset password
+
+const reset = document.getElementById("reset");
+reset.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById("loginUseremail").value;
+  sendPasswordResetEmail(auth, email)
+    .then(() => {
+      alert("Email sent!");
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      alert(`Error ${errorMessage}`);
     });
 });
 
@@ -159,19 +193,4 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   });
-});
-
-// Log out functionality
-
-const logoutBtn = document.getElementById("logoutBtn");
-logoutBtn.addEventListener("click", () => {
-  auth
-    .signOut()
-    .then(() => {
-      alert("You have logged out.");
-      window.location.href = "index.html";
-    })
-    .catch((error) => {
-      alert(`Error loggin out: ${error.message}`);
-    });
 });
