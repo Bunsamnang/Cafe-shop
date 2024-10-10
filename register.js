@@ -9,6 +9,8 @@ import {
   setPersistence,
   browserLocalPersistence,
   browserSessionPersistence,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 
 import {
@@ -29,8 +31,10 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth();
-const storage = getStorage();
+const auth = getAuth(app);
+auth.languageCode = "en";
+const storage = getStorage(); // storage for pfp
+const provider = new GoogleAuthProvider(); // for google sign up
 
 //submit btn
 
@@ -46,11 +50,11 @@ submitSignup.addEventListener("click", (e) => {
   const signupPassword = document.getElementById("signupPassword").value;
   const profilePic = document.getElementById("profilePic").files[0];
 
-  const passwordValidationMsg = validatePassword(signupPassword);
-  if (passwordValidationMsg) {
-    alert(passwordValidationMsg);
-    return; // Stop the signup process if validation fails
-  }
+  // const passwordValidationMsg = validatePassword(signupPassword);
+  // if (passwordValidationMsg) {
+  //   alert(passwordValidationMsg);
+  //   return; // Stop the signup process if validation fails
+  // }
 
   createUserWithEmailAndPassword(auth, signupUseremail, signupPassword)
     .then((userCredential) => {
@@ -170,6 +174,31 @@ reset.addEventListener("click", (e) => {
     });
 });
 
+// Google auth
+
+const googleLogin = document.getElementById("googleLogin");
+googleLogin.addEventListener("click", () => {
+  signInWithPopup(auth, provider)
+    .then((result) => {
+      // This gives you a Google Access Token. You can use it to access the Google API.
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential.accessToken;
+      // The signed-in user info.
+      const user = result.user;
+      // IdP data available using getAdditionalUserInfo(result)
+      // ...
+    })
+    .then(() => {
+      alert("Connected google account!");
+      window.location.href = "index.html";
+    })
+    .catch((error) => {
+      // Handle Errors here.
+      const errorCode = error.code;
+      const errorMessage = error.message;
+    });
+});
+
 // Track if this is the first time the page is loaded
 let firstLoad = true;
 
@@ -218,29 +247,29 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// Password validation function
-function validatePassword(password) {
-  const minLength = 8;
-  const hasUpperCase = /[A-Z]/.test(password);
-  const hasLowerCase = /[a-z]/.test(password);
-  const hasNumber = /\d/.test(password);
-  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+// // Password validation function
+// function validatePassword(password) {
+//   const minLength = 8;
+//   const hasUpperCase = /[A-Z]/.test(password);
+//   const hasLowerCase = /[a-z]/.test(password);
+//   const hasNumber = /\d/.test(password);
+//   const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
-  if (password.length < minLength) {
-    return "Password must be at least 8 characters long.";
-  }
-  if (!hasUpperCase) {
-    return "Password must contain at least one uppercase letter.";
-  }
-  if (!hasLowerCase) {
-    return "Password must contain at least one lowercase letter.";
-  }
-  if (!hasNumber) {
-    return "Password must contain at least one number.";
-  }
-  if (!hasSpecialChar) {
-    return "Password must contain at least one special character.";
-  }
+//   if (password.length < minLength) {
+//     return "Password must be at least 8 characters long.";
+//   }
+//   if (!hasUpperCase) {
+//     return "Password must contain at least one uppercase letter.";
+//   }
+//   if (!hasLowerCase) {
+//     return "Password must contain at least one lowercase letter.";
+//   }
+//   if (!hasNumber) {
+//     return "Password must contain at least one number.";
+//   }
+//   if (!hasSpecialChar) {
+//     return "Password must contain at least one special character.";
+//   }
 
-  return ""; // Return an empty string if validation passes
-}
+//   return ""; // Return an empty string if validation passes
+// }
