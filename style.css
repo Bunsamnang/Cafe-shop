@@ -37,7 +37,7 @@ header {
   transition: all 0.3s ease-in-out;
 }
 
-#profileContainer:hover #profileImage {
+img[src="images/user.svg"]:hover {
   filter: drop-shadow(0 0 5px dodgerblue);
 }
 
