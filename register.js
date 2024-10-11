@@ -213,6 +213,13 @@ facebookLogin.addEventListener("click", () => {
       const credential = FacebookAuthProvider.credentialFromResult(result);
       const accessToken = credential.accessToken;
 
+      const photoURL = user.photoURL;
+      console.log("Photo URL: ", photoURL);
+      const profileImage = document.getElementById("profileImage");
+      if (photoURL) {
+        profileImage.src = photoURL;
+      }
+
       // IdP data available using getAdditionalUserInfo(result)
       // ...
     })
