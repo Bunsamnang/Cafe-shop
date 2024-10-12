@@ -10,7 +10,6 @@ import {
   browserLocalPersistence,
   browserSessionPersistence,
   GoogleAuthProvider,
-  FacebookAuthProvider,
   signInWithPopup,
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 
@@ -35,8 +34,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 auth.languageCode = "en";
 const storage = getStorage(); // storage for pfp
-const googleProvider = new GoogleAuthProvider(); // for google sign up
-const facebookProvider = new FacebookAuthProvider();
 
 //submit btn
 
@@ -177,6 +174,8 @@ reset.addEventListener("click", (e) => {
 });
 
 // Google auth
+const googleProvider = new GoogleAuthProvider(); // for google sign up
+
 const googleLogin = document.getElementById("googleLogin");
 googleLogin.addEventListener("click", () => {
   signInWithPopup(auth, googleProvider)
@@ -188,8 +187,6 @@ googleLogin.addEventListener("click", () => {
       const user = result.user;
       // IdP data available using getAdditionalUserInfo(result)
       // ...
-    })
-    .then(() => {
       alert("Connected google account!");
       window.location.href = "index.html";
     })
@@ -197,46 +194,6 @@ googleLogin.addEventListener("click", () => {
       // Handle Errors here.
       const errorCode = error.code;
       const errorMessage = error.message;
-    });
-});
-
-// Facebook auth
-
-const facebookLogin = document.getElementById("facebookLogin");
-facebookLogin.addEventListener("click", () => {
-  signInWithPopup(auth, facebookProvider)
-    .then((result) => {
-      // The signed-in user info.
-      const user = result.user;
-
-      // This gives you a Facebook Access Token. You can use it to access the Facebook API.
-      const credential = FacebookAuthProvider.credentialFromResult(result);
-      const accessToken = credential.accessToken;
-
-      const photoURL = user.photoURL;
-      console.log("Photo URL: ", photoURL);
-      const profileImage = document.getElementById("profileImage");
-      if (photoURL) {
-        profileImage.src = photoURL;
-      }
-
-      // IdP data available using getAdditionalUserInfo(result)
-      // ...
-    })
-    .then(() => {
-      alert("Connected Facebook account!");
-      window.location.href = "index.html";
-    })
-    .catch((error) => {
-      // Handle Errors here.
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      // The email of the user's account used.
-      const email = error.customData.email;
-      // The AuthCredential type that was used.
-      const credential = FacebookAuthProvider.credentialFromError(error);
-
-      // ...
     });
 });
 

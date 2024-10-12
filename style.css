@@ -86,16 +86,15 @@ button {
   background-color: #c33d2d;
 } */
 
-.google-btn,
-.facebook-btn {
+.google-btn {
   display: flex;
   align-items: center;
-  justify-content: center;
-  background-color: #ffffff;
+  justify-content: space-between;
+  background-color: #fff;
   border: 1px solid #dcdcdc;
   border-radius: 5px;
   color: #757575;
-  font-size: 16px;
+  font-size: 1.1rem;
   font-weight: 500;
   padding: 10px;
   width: 100%;
@@ -104,14 +103,12 @@ button {
   transition: background-color 0.3s ease;
 }
 
-.google-btn img,
-.facebook-btn img {
+.google-btn img {
   height: 30px;
   margin-right: 8px;
 }
 
-.google-btn:hover,
-.facebook-btn:hover {
+.google-btn:hover {
   background-color: #e1e1e1;
 }
 
