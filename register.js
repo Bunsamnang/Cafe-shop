@@ -200,6 +200,11 @@ googleLogin.addEventListener("click", () => {
 // Track if this is the first time the page is loaded
 let firstLoad = true;
 
+// Reservation page
+const reserveNav = document.getElementById("reserve-nav");
+reserveNav.addEventListener("click", () => {
+  alert("5");
+});
 // Check authentication status when the page loads
 document.addEventListener("DOMContentLoaded", () => {
   auth.onAuthStateChanged((user) => {
@@ -223,6 +228,10 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         profileImage.src = "images/user.svg";
       }
+
+      // activate reserve option
+      reserveNav.classList.remove("disabled");
+      reserveNav.removeAttribute("aria-disabled");
 
       // Reset firstLoad to false since the user is logged in
       firstLoad = false;
