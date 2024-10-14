@@ -202,9 +202,7 @@ let firstLoad = true;
 
 // Reservation page
 const reserveNav = document.getElementById("reserve-nav");
-reserveNav.addEventListener("click", () => {
-  alert("5");
-});
+
 // Check authentication status when the page loads
 document.addEventListener("DOMContentLoaded", () => {
   auth.onAuthStateChanged((user) => {
