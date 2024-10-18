@@ -10,6 +10,8 @@
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous"
     />
+
+    <script src="database.js" type="module" defer></script>
   </head>
   <body>
     <header
@@ -19,15 +21,14 @@
         <a
           href="/"
           class="d-inline-flex link-body-emphasis text-decoration-none fs-2"
+          >Mithona</a
         >
-          Mithona
-        </a>
       </div>
 
       <ul
         class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0 fs-5"
       >
-        <li><a href="#" class="nav-link px-4">Home</a></li>
+        <li><a href="index.html" class="nav-link px-4">Home</a></li>
         <li><a href="#" class="nav-link px-4">Menu</a></li>
         <li><a href="#" class="nav-link px-4">FAQs</a></li>
         <li><a href="#" class="nav-link px-4">About</a></li>
@@ -39,66 +40,20 @@
       <div class="col-md-3 text-end"></div>
     </header>
 
-    <!-- Room Selection Section -->
-    <div class="container mt-5">
-      <h2>Room Reservation</h2>
-      <form>
-        <div class="mb-3">
-          <label for="roomType" class="form-label">Room Type</label>
-          <select class="form-select" id="roomType" required>
-            <option value="">Select Room Type</option>
-            <option value="single">Single</option>
-            <option value="double">Double</option>
-            <option value="suite">Suite</option>
-          </select>
-        </div>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="mb-3">
-              <label for="checkinDate" class="form-label">Check-in Date</label>
-              <input
-                type="date"
-                class="form-control"
-                id="checkinDate"
-                required
-              />
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="mb-3">
-              <label for="checkoutDate" class="form-label"
-                >Check-out Date</label
-              >
-              <input
-                type="date"
-                class="form-control"
-                id="checkoutDate"
-                required
-              />
-            </div>
-          </div>
-        </div>
-        <div class="mb-3">
-          <label for="guests" class="form-label">Number of Guests</label>
-          <input
-            type="number"
-            class="form-control"
-            id="guests"
-            min="1"
-            max="10"
-            required
-          />
-        </div>
-        <button type="button" class="btn btn-primary">
-          Check Availability
-        </button>
-      </form>
+    <!-- Room Availability Section -->
+    <div class="container mt-5" id="room-availability">
+      <h3>Available Rooms</h3>
+      <div class="my-3">
+        <label for="date" class="form-label">Select Date</label>
+        <input type="date" class="form-control" id="selectedDate" />
+      </div>
+      <div class="row" id="rooms"></div>
     </div>
 
     <!-- Booking Form -->
-    <div class="container mt-5">
+    <div class="container mt-5 d-none" id="booking-details">
       <h3>Booking Details</h3>
-      <form>
+      <form id="form">
         <div class="mb-3">
           <label for="fullName" class="form-label">Full Name</label>
           <input type="text" class="form-control" id="fullName" required />
@@ -126,7 +81,7 @@
     </div>
 
     <!-- Payment Options -->
-    <div class="container mt-5">
+    <div class="container mt-5" id="payment-options" style="display: none">
       <h4>Payment</h4>
       <p>Total Price: $250</p>
       <button class="btn btn-primary">Pay with Credit Card</button>
