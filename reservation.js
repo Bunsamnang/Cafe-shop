@@ -1,27 +1,28 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
 import {
-  getDatabase,
-  ref,
+  ref as databaseRef,
   set,
   get,
+  push,
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+import { db } from "./firebase.js"; // Use the new firebaseInit file
+import { auth } from "./firebase.js"; // Ensure you import the Firebase auth module
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyC2gCcRBQx7q2MYo861UplsNv5BHCA_SXQ",
-  authDomain: "cafe-bef30.firebaseapp.com",
-  projectId: "cafe-bef30",
-  storageBucket: "cafe-bef30.appspot.com",
-  messagingSenderId: "548136211455",
-  appId: "1:548136211455:web:79347d6eb5204aeb1b0dca",
-};
+let uid = null; // Variable to hold the user ID
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+// Monitor authentication state
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    uid = user.uid; // Set the UID when user is authenticated
+    console.log(`User is logged in: ${uid}`);
+    // You can call any initialization functions here if needed
+  } else {
+    uid = null; // User is signed out
+    console.log("No user is logged in.");
+  }
+});
 
 function initializeRooms() {
-  const roomsRef = ref(db, "rooms");
+  const roomsRef = databaseRef(db, "rooms");
 
   get(roomsRef)
     .then((snapshot) => {
@@ -97,14 +98,16 @@ function renderRooms() {
     return; // Don't render rooms until a date is selected
   }
 
-  // Correctly reference the 'rooms' path
-  const roomsRef = ref(db, "rooms");
+  const roomsRef = databaseRef(db, "rooms");
 
   get(roomsRef)
     .then((snapshot) => {
       snapshot.forEach((childSnapshot) => {
         const room = childSnapshot.val();
         const roomId = childSnapshot.key;
+
+        const roomName = room.name;
+
         const roomDiv = document.createElement("div");
         roomDiv.className = "col-md-3 mb-4";
 
@@ -118,6 +121,8 @@ function renderRooms() {
             )
           : []; // Fallback to an empty array if no availabilities
 
+        console.log(availableTimesList);
+
         roomDiv.innerHTML = `
                 <div class="card">
                   <div class="card-body">
@@ -130,7 +135,7 @@ function renderRooms() {
                         )
                         .join("")}
                     </select>
-                    <button class="btn btn-primary mt-2" onclick="reserveRoom('${roomId}')">Reserve</button>
+                    <button class="btn btn-primary mt-2" onclick="reserveRoom('${roomId}', '${roomName}')">Reserve</button>
                   </div>
                 </div>`;
         roomsContainer.appendChild(roomDiv);
@@ -142,7 +147,7 @@ function renderRooms() {
 }
 
 // Function to reserve a room
-function reserveRoom(roomId) {
+function reserveRoom(roomId, roomName) {
   const selectedDate = document.getElementById("selectedDate").value;
   const selectedTime = document.getElementById(`time-${roomId}`).value;
 
@@ -151,8 +156,22 @@ function reserveRoom(roomId) {
     return; // Exit if date or time is not selected
   }
 
+  if (!uid) {
+    alert("You need to be logged in to reserve a room.");
+    return; // Exit if user is not logged in
+  }
+
+  // Reference to the user's reservations
+  const userReservationRef = databaseRef(db, `users/${uid}/reservations`);
+
+  // Create a new reservation entry
+  const newReservationRef = push(userReservationRef); // Use push to create a unique key
+
   // Correctly reference the room's availability for the selected date
-  const roomRef = ref(db, `rooms/${roomId}/availabilities/${selectedDate}`);
+  const roomRef = databaseRef(
+    db,
+    `rooms/${roomId}/availabilities/${selectedDate}`
+  );
 
   get(roomRef).then((snapshot) => {
     const availabilities = snapshot.val() || {};
@@ -163,12 +182,22 @@ function reserveRoom(roomId) {
       availabilities[selectedTime] = false; // Mark as reserved
       set(roomRef, availabilities) // Update availability for the selected date
         .then(() => {
-          alert(
-            `Room ${roomId} reserved for ${selectedTime} on ${selectedDate}`
-          );
-          renderRooms(); // Re-render the available times
-          const bookingDetails = document.getElementById("booking-details");
-          bookingDetails.classList.remove("d-none");
+          set(newReservationRef, {
+            roomName: roomName,
+            date: selectedDate,
+            time: selectedTime,
+          })
+            .then(() => {
+              alert(
+                `${roomName} reserved for ${selectedTime} on ${selectedDate}`
+              );
+              const bookingDetails = document.getElementById("booking-details");
+              bookingDetails.classList.remove("d-none");
+              renderRooms(); // Re-render the available times
+            })
+            .catch((error) => {
+              console.error("Error recording reservation:", error);
+            });
         })
         .catch((error) => {
           console.error("Error reserving room:", error);
@@ -176,6 +205,40 @@ function reserveRoom(roomId) {
     } else {
       alert("This time is no longer available.");
     }
+  });
+}
+
+const bookingForm = document.getElementById("form");
+
+if (bookingForm) {
+  bookingForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const fullName = document.getElementById("fullName").value;
+    const email = document.getElementById("email").value;
+    const phoneNum = document.getElementById("phone").value;
+
+    if (!uid) {
+      alert("You need to be logged in to book a room.");
+      return; // Exit if user is not logged in
+    }
+
+    const bookingDetailsRef = databaseRef(db, `users/${uid}/booking_details`);
+    const newBookingDetails = push(bookingDetailsRef);
+
+    set(newBookingDetails, {
+      userName: fullName,
+      userEmail: email,
+      tel: phoneNum,
+    })
+      .then(() => {
+        bookingForm.reset(); // Clear form after submission
+        alert("Your booking has been recorded!");
+        console.log("Booking details recorded");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   });
 }
 
