@@ -151,7 +151,7 @@ function reserveRoom(roomId, roomName) {
   const selectedDate = document.getElementById("selectedDate").value;
   const selectedTime = document.getElementById(`time-${roomId}`).value;
 
-  if (!selectedDate || !selectedTime) {
+  if (!selectedDate || !selectedTime || selectedTime === "") {
     alert("Please select a date and time to reserve this room.");
     return; // Exit if date or time is not selected
   }

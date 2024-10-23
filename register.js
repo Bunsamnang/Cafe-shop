@@ -253,13 +253,3 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
-
-export function getUid(callback) {
-  auth.onAuthStateChanged((user) => {
-    if (user) {
-      callback(user.uid);
-    } else {
-      callback(null);
-    }
-  });
-}
