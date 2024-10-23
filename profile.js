@@ -7,9 +7,11 @@ import { db } from "./firebase.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const bookingDetails = document.getElementById("booking-details-container");
+  const reservationDetails = document.getElementById("reservation-history");
 
   // Reset the inner HTML
   bookingDetails.innerHTML = "";
+  reservationDetails.innerHTML = "";
 
   // Listen for authentication state
 
@@ -58,6 +60,37 @@ document.addEventListener("DOMContentLoaded", () => {
           } else {
             bookingDetails.innerHTML = `<p class="text-center">No booking details found</p>`;
             console.log("No booking details found");
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching booking details:", error);
+        });
+
+      const reservationDetailsData = databaseRef(
+        db,
+        `users/${uid}/reservations`
+      );
+
+      get(reservationDetailsData)
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            let html = "";
+
+            snapshot.forEach((childSnapshot) => {
+              const reservationDetail = childSnapshot.val();
+
+              const date = reservationDetail.date;
+              const roomName = reservationDetail.roomName;
+              const time = reservationDetail.time;
+
+              html += `<tr>
+                        <td>${roomName}</td>
+                        <td>${date}</td>
+                        <td>${time}</td>
+                      </tr>`;
+            });
+
+            reservationDetails.innerHTML = html;
           }
         })
         .catch((error) => {
