@@ -26,7 +26,7 @@ function initializeRooms() {
 
   get(roomsRef)
     .then((snapshot) => {
-      if (!snapshot.exists()) {
+      if (snapshot.exists()) {
         const roomsData = {
           room1: {
             name: "Room 1",
@@ -72,7 +72,7 @@ function generateAvailability(days) {
     const dateString = date.toISOString().split("T")[0]; // Format date as YYYY-MM-DD
     availabilities[dateString] = {
       "09:00": true,
-      "12:00": true,
+      "11:00": true,
       "13:00": true,
       "16:00": true,
       "18:00": true,
@@ -161,55 +161,27 @@ function reserveRoom(roomId, roomName) {
     return; // Exit if user is not logged in
   }
 
-  // Reference to the user's reservations
-  const userReservationRef = databaseRef(db, `users/${uid}/reservations`);
+  // Store the reservation as pending
+  const pendingReservation = {
+    roomId,
+    roomName,
+    date: selectedDate,
+    time: selectedTime,
+  };
 
-  // Create a new reservation entry
-  const newReservationRef = push(userReservationRef); // Use push to create a unique key
-
-  // Correctly reference the room's availability for the selected date
-  const roomRef = databaseRef(
-    db,
-    `rooms/${roomId}/availabilities/${selectedDate}`
+  localStorage.setItem(
+    "pendingReservation",
+    JSON.stringify(pendingReservation)
   );
+  alert("Room reserved temporarily! Please complete your booking details.");
 
-  get(roomRef).then((snapshot) => {
-    const availabilities = snapshot.val() || {};
-
-    // Check if the selected time is available
-    if (availabilities[selectedTime] === true) {
-      // Mark the room as unavailable for the selected time
-      availabilities[selectedTime] = false; // Mark as reserved
-      set(roomRef, availabilities) // Update availability for the selected date
-        .then(() => {
-          set(newReservationRef, {
-            roomName: roomName,
-            date: selectedDate,
-            time: selectedTime,
-          })
-            .then(() => {
-              alert(
-                `${roomName} reserved for ${selectedTime} on ${selectedDate}`
-              );
-              const bookingDetails = document.getElementById("booking-details");
-              bookingDetails.classList.remove("d-none");
-              renderRooms(); // Re-render the available times
-            })
-            .catch((error) => {
-              console.error("Error recording reservation:", error);
-            });
-        })
-        .catch((error) => {
-          console.error("Error reserving room:", error);
-        });
-    } else {
-      alert("This time is no longer available.");
-    }
-  });
+  const bookingDetails = document.getElementById("booking-details");
+  bookingDetails.classList.remove("d-none");
 }
 
 const bookingForm = document.getElementById("form");
 
+// Form submission and finalizing reservation
 if (bookingForm) {
   bookingForm.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -223,22 +195,59 @@ if (bookingForm) {
       return; // Exit if user is not logged in
     }
 
-    const bookingDetailsRef = databaseRef(db, `users/${uid}/booking_details`);
-    const newBookingDetails = push(bookingDetailsRef);
+    // Retrieve the pending reservation from localStorage
+    const pendingReservation = JSON.parse(
+      localStorage.getItem("pendingReservation")
+    );
 
-    set(newBookingDetails, {
-      userName: fullName,
-      userEmail: email,
-      tel: phoneNum,
-    })
-      .then(() => {
-        bookingForm.reset(); // Clear form after submission
-        alert("Your booking has been recorded!");
-        console.log("Booking details recorded");
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    if (!pendingReservation) {
+      alert("No pending reservation found.");
+      return;
+    }
+
+    const { roomId, roomName, date, time } = pendingReservation;
+
+    // Reference to the user's reservations
+    const userReservationRef = databaseRef(db, `users/${uid}/reservations`);
+    const newReservationRef = push(userReservationRef); // Use push to create a unique key
+
+    // Correctly reference the room's availability for the selected date
+    const roomRef = databaseRef(db, `rooms/${roomId}/availabilities/${date}`);
+
+    get(roomRef).then((snapshot) => {
+      const availabilities = snapshot.val() || {};
+
+      // Check if the selected time is available
+      if (availabilities[time] === true) {
+        // Mark the room as unavailable for the selected time
+        availabilities[time] = false; // Mark as reserved
+        set(roomRef, availabilities) // Update availability for the selected date
+          .then(() => {
+            // Store the reservation details in the user's reservations
+            set(newReservationRef, {
+              roomName,
+              date,
+              time,
+              userName: fullName,
+              userEmail: email,
+              tel: phoneNum,
+            })
+              .then(() => {
+                alert(`${roomName} reserved for ${time} on ${date}`);
+                bookingForm.reset(); // Clear form after submission
+
+                localStorage.removeItem("pendingReservation"); // Clear pending reservation
+                renderRooms(); // Re-render the available times
+              })
+              .catch((error) => {
+                console.error("Error recording reservation:", error);
+              });
+          })
+          .catch((error) => {
+            console.error("Error reserving room:", error);
+          });
+      }
+    });
   });
 }
 
