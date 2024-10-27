@@ -26,7 +26,7 @@ function initializeRooms() {
 
   get(roomsRef)
     .then((snapshot) => {
-      if (snapshot.exists()) {
+      if (!snapshot.exists()) {
         const roomsData = {
           room1: {
             name: "Room 1",
