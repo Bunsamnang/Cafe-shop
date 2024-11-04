@@ -71,7 +71,7 @@ if (submitSignup) {
       .then(() => {
         // Redirect to the main page after successfully signing up
         alert("Account created successfully!");
-        window.location.href = "index.html";
+        window.location.href = window.location.href;
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -102,7 +102,7 @@ if (submitLogin) {
       .then((userCredential) => {
         const user = userCredential.user;
         alert(`Welcome back, ${user.displayName}!`);
-        window.location.href = "index.html";
+        window.location.href = window.location.href;
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -136,7 +136,7 @@ if (logoutBtn) {
       .signOut()
       .then(() => {
         alert("You have logged out.");
-        window.location.href = "index.html";
+        window.location.href = window.location.href;
       })
       .catch((error) => {
         alert(`Error loggin out: ${error.message}`);
@@ -179,7 +179,7 @@ if (googleLogin) {
         // IdP data available using getAdditionalUserInfo(result)
         // ...
         alert(`Connected google account! Welcome ${user.displayName}`);
-        window.location.href = "index.html";
+        window.location.href = window.location.href;
       })
       .catch((error) => {
         // Handle Errors here.

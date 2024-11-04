@@ -25,3 +25,7 @@ header {
     transform: translateX(0);
   }
 }
+
+.is-visited {
+  border-bottom: 1px solid dodgerblue;
+}
