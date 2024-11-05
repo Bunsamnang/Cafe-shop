@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ordering</title>
+    <link rel="stylesheet" href="Ordering.css">
+</head>
+<body>
+    <h1>Plain Cafe</h1>
+    <h2>
+        <a href="Menu.html">←</a>
+        Order
+    </h2>
+
+    <div class="container">
+        <div id="Img" class="image"></div>
+        <div id="Txt" class="text"></div>
+        <div class="quantity-control">
+            <button id="decrease">-</button>
+            <p id="quantity">1</p>
+            <button id="increase">+</button>
+        </div>
+    </div>
+
+    <div class="ordering-container">
+        <div class="section-container">
+            <h2 id="size">Size</h2>
+            <ul class="options">
+                <li>
+                    <input type="radio" name="size" id="option1_size" class="size-answer">
+                    <label for="option1_size" id="option1_text_size">Small +0.00$</label>
+                </li>
+                <li>
+                    <input type="radio" name="size" id="option2_size" class="size-answer">
+                    <label for="option2_size" id="option2_text_size">Medium +0.50$</label>
+                </li>
+                <li>
+                    <input type="radio" name="size" id="option3_size" class="size-answer">
+                    <label for="option3_size" id="option3_text_size">Large +1.00$</label>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="section-container">
+            <h2 id="ice">Ice</h2>
+            <ul class="options">
+                <li>
+                    <input type="radio" name="ice" id="option1_ice" class="ice-answer">
+                    <label for="option1_ice" id="option1_text_ice">25%</label>
+                </li>
+                <li>
+                    <input type="radio" name="ice" id="option2_ice" class="ice-answer">
+                    <label for="option2_ice" id="option2_text_ice">50%</label>
+                </li>
+                <li>
+                    <input type="radio" name="ice" id="option3_ice" class="ice-answer">
+                    <label for="option3_ice" id="option3_text_ice">75%</label>
+                </li>
+                <li>
+                    <input type="radio" name="ice" id="option4_ice" class="ice-answer">
+                    <label for="option4_ice" id="option4_text_ice">100%</label>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="section-container">
+            <h2 id="sugar">Sugar</h2>
+            <ul class="options">
+                <li>
+                    <input type="radio" name="sugar" id="option1_sugar" class="sugar-answer">
+                    <label for="option1_sugar" id="option1_text_sugar">25%</label>
+                </li>
+                <li>
+                    <input type="radio" name="sugar" id="option2_sugar" class="sugar-answer">
+                    <label for="option2_sugar" id="option2_text_sugar">50%</label>
+                </li>
+                <li>
+                    <input type="radio" name="sugar" id="option3_sugar" class="sugar-answer">
+                    <label for="option3_sugar" id="option3_text_sugar">75%</label>
+                </li>
+                <li>
+                    <input type="radio" name="sugar" id="option4_sugar" class="sugar-answer">
+                    <label for="option4_sugar" id="option4_text_sugar">100%</label>
+                </li>
+            </ul>
+        </div>
+        
+        <p id="price">Price: $0.00</p>
+        <a href="Menu.html">
+            <button onclick="addToCart()">🛒 Add to cart</button>
+        </a>
+    </div>
+
+    <script src="Ordering.js"></script>
+</body>
+</html>

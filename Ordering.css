@@ -1,0 +1,153 @@
+.ordering-container{
+    padding: 0px;
+    border-radius: 10px;
+    text-align: left;
+    padding-top: 10px;
+}
+
+.container{
+    width: 350px;
+    height: 440px;
+    margin-left: 150px;
+    margin-top: 35px;
+    margin-right: 100px;
+    border-radius: 10px;
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.2);
+    float: left;
+}
+
+.image{
+    width: 337px;
+    padding: 7px;
+    height: 355px;
+}
+
+.image img{
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+}
+
+.text{
+    text-align: left;
+    margin-left: 30px;
+    display: inline-block;
+    margin-top: 0px;
+    font-size: 1.3em;
+    text-decoration: none;
+    color: rgb(34, 34, 34);
+}
+
+.quantity-control{
+    display: inline-block;
+    float: right;
+}
+
+body{
+    background-color: rgb(255, 255, 255);
+}
+
+h1{
+    color: rgb(34, 34, 34);
+    margin-left: 20px;
+    font-size: 3em;
+    margin-bottom: 15px;
+}
+
+h2{
+    color: rgb(34, 34, 34);
+    margin-left: 20px;
+    margin-bottom: 0px;
+    font-size: 2em;
+    margin-top: 20px;
+}
+
+h2 a{
+    text-decoration: none;
+    margin-right: 20px;
+}
+
+h2 a:hover{
+    cursor: pointer;
+    background-color: rgb(202, 202, 202);
+    border-radius: 48%;
+}
+
+.options {
+    list-style: none;
+    display: inline-flex;
+    padding: 0;
+    margin: 0; /* Remove margin between sections */
+}
+
+.options li{
+    padding: 15px;
+    padding-left: 0px;
+    font-size: 1.3em;
+}
+
+.options input{
+    cursor: pointer;
+}
+
+.options label{
+    cursor: pointer;
+}
+
+.container button{
+    margin-top: 0;
+    width: 30px;
+    height: 30px;
+    font-size: 1.5em;
+    padding: 0;
+    border-radius: 50%;
+    margin-top: 20px;
+    margin-right: 10px;
+    margin-left: 0;
+}
+
+button{
+    color: white;
+    background-color: rgb(0, 170, 0);
+    border-radius: 25px;
+    width: 200px;
+    padding: 10px 10px;
+    font-size: 1.2em;
+    text-align: center;
+    margin-left: 50px;
+    margin-top: 10px;
+}
+
+button:hover{
+    cursor: pointer;
+    background-color: rgb(0, 125, 0);
+}
+
+.section-container {
+    margin-bottom: 0;
+    padding: 0;
+}
+
+.quantity-control p{
+    display: inline-block;
+    margin-right: 5px;
+    font-size: 1.4em;
+    margin-right: 11px;
+}
+
+#total-amount{
+    font-size: 1.5em;
+    margin-left: 23px;
+    margin-top: 100px;
+}
+
+#price{
+    font-size: 1.3em;
+}
+
+#cart-items{
+    font-size: 1.2em;
+    margin-left: 0px;
+    margin-top: 0px;
+}

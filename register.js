@@ -189,9 +189,6 @@ if (googleLogin) {
   });
 }
 
-// Track if this is the first time the page is loaded
-let firstLoad = true;
-
 // Check authentication status when the page loads
 document.addEventListener("DOMContentLoaded", () => {
   auth.onAuthStateChanged((user) => {
@@ -226,9 +223,6 @@ document.addEventListener("DOMContentLoaded", () => {
         reserveNav.classList.remove("disabled");
         reserveNav.removeAttribute("aria-disabled");
       }
-
-      // Reset firstLoad to false since the user is logged in
-      firstLoad = false;
     } else {
       // No user is signed in
 
@@ -244,12 +238,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const profileContainer = document.getElementById("profileContainer");
       if (profileContainer) profileContainer.classList.add("d-none");
-
-      // Only show the alert on the first load, not on logout
-      if (firstLoad) {
-        alert("Sign in or Sign up to book a reservation or order drinks.");
-        firstLoad = false; // Prevent further alerts on logouts or reloads
-      }
     }
   });
 });
