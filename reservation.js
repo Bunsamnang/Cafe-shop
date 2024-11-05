@@ -69,8 +69,8 @@ function generateAvailability(days) {
   console.log(today);
 
   for (let i = 0; i < days; i++) {
-    const date = new Date(today);
-    date.setDate(today.getDate() + i);
+    const date = new Date(today.getTime()); // Use today as the base each time
+    date.setDate(date.getDate() + i); // Add 'i' days from today
     const dateString = date.toISOString().split("T")[0]; // Format date as YYYY-MM-DD
     availabilities[dateString] = {
       "09:00": true,
