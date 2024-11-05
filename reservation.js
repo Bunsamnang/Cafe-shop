@@ -66,6 +66,8 @@ function generateAvailability(days) {
   const availabilities = {};
   const today = new Date();
 
+  console.log(today);
+
   for (let i = 0; i < days; i++) {
     const date = new Date(today);
     date.setDate(today.getDate() + i);
