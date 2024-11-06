@@ -26,23 +26,23 @@ function initializeRooms() {
 
   get(roomsRef)
     .then((snapshot) => {
-      if (snapshot.exists()) {
+      if (!snapshot.exists()) {
         const roomsData = {
           room1: {
             name: "Room 1",
-            availabilities: generateAvailability(30), // 30 days of availability
+            availabilities: generateAvailability(31), // 30 days of availability
           },
           room2: {
             name: "Room 2",
-            availabilities: generateAvailability(30),
+            availabilities: generateAvailability(31),
           },
           room3: {
             name: "Room 3",
-            availabilities: generateAvailability(30),
+            availabilities: generateAvailability(31),
           },
           room4: {
             name: "Room 4",
-            availabilities: generateAvailability(30),
+            availabilities: generateAvailability(31),
           },
         };
 
@@ -64,14 +64,16 @@ function initializeRooms() {
 
 function generateAvailability(days) {
   const availabilities = {};
-  const today = new Date();
+  const today = new Date(); // Gets the current date and time
 
-  console.log(today);
+  // Set time to the start of the day to ensure consistency
+  today.setHours(0, 0, 0, 0);
 
   for (let i = 0; i < days; i++) {
-    const date = new Date(today.getTime()); // Use today as the base each time
-    date.setDate(date.getDate() + i); // Add 'i' days from today
+    const date = new Date(today);
+    date.setDate(today.getDate() + i); // Add 'i' days from today's date
     const dateString = date.toISOString().split("T")[0]; // Format date as YYYY-MM-DD
+
     availabilities[dateString] = {
       "09:00": true,
       "11:00": true,
